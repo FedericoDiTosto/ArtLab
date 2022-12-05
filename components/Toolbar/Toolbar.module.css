@@ -1,0 +1,38 @@
+.toolbar {
+    position: absolute;
+    height: 50%;
+    width: 2.5em;
+    align-items: center;
+    justify-content: space-around;
+    left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+
+}
+
+.toolbarButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 25px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.toolbarButton:hover {
+    width: 2.15em;
+    height: 2.15em;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+
+}
+
+.toolbarIcon {
+    font-size: 20px;
+}
