@@ -1,7 +1,7 @@
 .toolbar {
     position: absolute;
     height: 50%;
-    width: 2.5em;
+    width: 5em;
     align-items: center;
     justify-content: space-around;
     left: 5px;
@@ -16,8 +16,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2em;
-    height: 2em;
+    width: 3em;
+    height: 3em;
     border-radius: 25px;
     background-color: black;
     color: white;
@@ -25,10 +25,8 @@
 }
 
 .toolbarButton:hover {
-    width: 2.15em;
-    height: 2.15em;
+    transform: scale(1.25);
     background-color: #333;
-    color: white;
     cursor: pointer;
 
 }
