@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { createElement, MouseEventHandler, useEffect, useRef } from 'react';
 import styles from './Canvas.module.css'
 import { useState, MouseEvent } from 'react';
-import useCanvasStore from '../../store/store';
+import useCanvasStore from '../../store/canvasStore';
 import useUiStore, { Mode } from "../../store/ui";
 
 export default function Canvas() {
@@ -21,6 +21,10 @@ export default function Canvas() {
         points: state.points,
         setPoints: state.setPoints,
     }));
+    const { strokeWidth } = useCanvasStore((state) => ({
+        strokeWidth: state.strokeWidth,
+    }));
+    const [pathStrokeWidths, setPathStrokeWidths] = useState<number[]>([]);
 
     useEffect(() => {
         if (mode === Mode.DRAW && isDrawing && points.length > 0) {
@@ -41,6 +45,11 @@ export default function Canvas() {
         if (mode === Mode.DRAW) {
             setIsDrawing(true);
         }
+        else if (mode === Mode.ERASE) {
+            setSavedPaths([]);
+            setPoints([]);
+            setCurrentPath('')
+        }
     };
 
     const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
@@ -57,7 +66,6 @@ export default function Canvas() {
     const handleMouseUp = (event: MouseEvent<SVGSVGElement>) => {
         if (mode === Mode.DRAW) {
             setIsDrawing(false);
-
             const currentPath =
                 points.length === 0
                     ? ""
@@ -71,11 +79,8 @@ export default function Canvas() {
                         .join("");
 
             setSavedPaths([...savedPaths, currentPath]);
+            setPathStrokeWidths([...pathStrokeWidths, strokeWidth]);
             setPoints([]);
-        } else if (mode === Mode.ERASE) {
-            setSavedPaths([]);
-            setPoints([]);
-            setCurrentPath('')
         }
     };
 
@@ -94,7 +99,7 @@ export default function Canvas() {
                     d={path}
                     fill="none"
                     stroke="black"
-                    strokeWidth="2"
+                    strokeWidth={pathStrokeWidths[index]}
                     strokeLinecap="round"
                 />
             ))}
@@ -103,7 +108,7 @@ export default function Canvas() {
                     d={currentPath}
                     fill="none"
                     stroke="black"
-                    strokeWidth="2"
+                    strokeWidth={strokeWidth}
                     strokeLinecap="round"
                 />
             )}

@@ -14,8 +14,10 @@
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.6",
     "next": "13.0.6",
+    "path-intersection": "^2.2.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-icons": "^4.7.1",
     "typescript": "4.9.3",
     "zustand": "^4.1.4"

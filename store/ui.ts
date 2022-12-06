@@ -2,7 +2,7 @@ import create from 'zustand'
 
 export enum Mode {
     DRAW,
-    ERASE
+    ERASE,
 }
 
 interface Ui {
