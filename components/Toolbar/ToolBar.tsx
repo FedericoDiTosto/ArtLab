@@ -11,9 +11,17 @@ export default function Toolbar() {
         mode: state.mode,
         setMode: state.setMode,
     }));
+    const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({
+        savedPaths: state.paths,
+        setSavedPaths: state.setPaths,
+    }));
     const { strokeWidth, setStrokeWidth } = useCanvasStore((state) => ({
         strokeWidth: state.strokeWidth,
         setStrokeWidth: state.setStrokeWidth
+    }));
+    const { shape, setShape } = useCanvasStore((state) => ({
+        shape: state.shape,
+        setShape: state.setShape
     }));
 
     const onPencilClick = () => {
@@ -26,24 +34,34 @@ export default function Toolbar() {
 
     const onPenClick = () => {
         setMode(Mode.PEN)
+        console.log(savedPaths.length, savedPaths)
     }
+
+    const onShapeClick = () => {
+        setMode(Mode.SHAPE)
+    }
+
 
     const onStrokeWidthChange = (event: any) => {
         setStrokeWidth(event.target.value);
     };
 
+    const onShapeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setShape(event.target.value);
+    };
+
     return (
         <div className={styles.toolbar}>
-            <button className={styles.toolbarButton} onClick={onPencilClick}>
+            <button className={styles.toolbarButton} onClick={onPencilClick} title="pencil">
                 <FaPencilAlt className={styles.toolbarIcon} />
             </button>
-            <button className={styles.toolbarButton} onClick={onEraserClick}>
+            <button className={styles.toolbarButton} onClick={onEraserClick} title="eraser">
                 <FaEraser className={styles.toolbarIcon} />
             </button>
             <button className={styles.toolbarButton} onClick={onPenClick}>
                 <FaPenFancy className={styles.toolbarIcon} />
             </button>
-            <div className={styles.boxSliderSrokeWidth}>
+            <div className={styles.boxSliderSrokeWidth} title="stroke">
                 <input
                     className={styles.sliderSrokeWidth}
                     type="range"
@@ -53,8 +71,13 @@ export default function Toolbar() {
                     onChange={onStrokeWidthChange} // Aggiungi questa proprietà per gestire il cambiamento del valore
                 />
                 <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
-
             </div>
+            <button className={styles.toolbarButton} onClick={onShapeClick}>
+                <select value={shape} onChange={onShapeChange}>
+                    <option value="Rectangle">Rectangle</option>
+                    <option value="Circle">Circle</option>
+                </select>
+            </button>
         </div>
     );
 }

@@ -3,7 +3,8 @@ import create from 'zustand'
 export enum Mode {
     DRAW,
     ERASE,
-    PEN
+    PEN,
+    SHAPE,
 }
 
 interface Ui {

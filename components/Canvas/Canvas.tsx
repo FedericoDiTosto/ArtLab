@@ -13,25 +13,37 @@ export default function Canvas() {
     const { mode } = useUiStore((state) => ({
         mode: state.mode,
     }));
-    const [currentPath, setCurrentPath] = useState('');
-    const [currentErasePath, setCurrentErasePath] = useState('');
+    const [currentPath, setCurrentPath] = useState<string>('');
+    const [currentErasePath, setCurrentErasePath] = useState<string>('');
+    const { shape, setShape } = useCanvasStore((state) => ({
+        shape: state.shape,
+        setShape: state.setShape
+    }));
+
     const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({
         savedPaths: state.paths,
         setSavedPaths: state.setPaths,
     }));
     const isDrawing = useCanvasStore((state) => state.drawing)
     const isErasing = useCanvasStore((state) => state.erasing)
+    const isCreatingShape = useCanvasStore((state) => state.shape)
     const setIsDrawing = useCanvasStore((state) => state.setDrawing)
     const setIsErasing = useCanvasStore((state) => state.setErasing)
+    const setIsCreatingShape = useCanvasStore((state) => state.setIsCreatingShape)
     const { points, setPoints } = useCanvasStore((state) => ({
         points: state.points,
         setPoints: state.setPoints,
+    }));
+    const { erasePoints, setErasePoints } = useCanvasStore((state) => ({
+        erasePoints: state.erasePoints,
+        setErasePoints: state.setErasePoints,
     }));
     const { strokeWidth } = useCanvasStore((state) => ({
         strokeWidth: state.strokeWidth,
     }));
     const [currentStrokeWidth, setCurrentStrokeWidth] = useState<number>();
     const [pathStrokeWidths, setPathStrokeWidths] = useState<Map<string, number>>(new Map())
+    const [startShapePoint, setStartShapePoint] = useState<[number, number]>();
 
     useEffect(() => {
         if (mode === Mode.DRAW && isDrawing && points.length > 0) {
@@ -46,9 +58,12 @@ export default function Canvas() {
 
             setCurrentPath(currentPath);
         }
-        if (mode === Mode.ERASE && isErasing && points.length > 0) {
-            const currentPath = `M${points[0][0]},${points[0][1]} C${points[0][0]},${points[0][1]}` +
-                points
+    }, [points]);
+
+    useEffect(() => {
+        if (mode === Mode.ERASE && isErasing && erasePoints.length > 0) {
+            const currentPath = `M${erasePoints[0][0]},${erasePoints[0][1]} C${erasePoints[0][0]},${erasePoints[0][1]}` +
+                erasePoints
                     .slice(1)
                     .map(
                         (point) =>
@@ -58,7 +73,7 @@ export default function Canvas() {
 
             setCurrentErasePath(currentPath);
         }
-    }, [points]);
+    }), [erasePoints]
 
     const handleMouseDown = (event: MouseEvent<SVGSVGElement>) => {
         if (mode === Mode.DRAW) {
@@ -67,6 +82,9 @@ export default function Canvas() {
         }
         else if (mode === Mode.ERASE) {
             setIsErasing(true)
+        }
+        else if (isCreatingShape && mode === Mode.SHAPE) {
+            setStartShapePoint([event.clientX, event.clientY]);
         }
     };
 
@@ -86,7 +104,25 @@ export default function Canvas() {
             point.x = event.clientX;
             point.y = event.clientY;
             const transformedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse());
-            setPoints([...points, [transformedPoint.x, transformedPoint.y]]);
+            setErasePoints([...erasePoints, [transformedPoint.x, transformedPoint.y]]);
+        }
+        else if (isCreatingShape && mode === Mode.SHAPE && startShapePoint) {
+            // Calcola la dimensione della forma utilizzando le coordinate del mouse
+            // e il punto iniziale della forma
+            const width = event.clientX - startShapePoint[0];
+            const height = event.clientY - startShapePoint[1];
+
+            // Usa la forma selezionata per determinare la stringa SVG da disegnare
+            let svgPath = "";
+            if (shape === "Rectangle") {
+                svgPath = `M${startShapePoint[0]},${startShapePoint[1]} h${width} v${height} h${-width} Z`;
+            } else if (shape === "Circle") {
+                const radius = Math.max(Math.abs(width), Math.abs(height));
+                svgPath = `M${startShapePoint[0]},${startShapePoint[1]} m${-radius},0 a${radius},${radius} 0 1,0 ${2 * radius},0 a${radius},${radius} 0 1,0 ${-2 * radius},0`;
+            }
+
+            // Aggiorna il percorso corrente con il nuovo percorso SVG
+            setCurrentPath(svgPath);
         }
     };
 
@@ -123,7 +159,14 @@ export default function Canvas() {
                     }
                 }
             })
+            setErasePoints([])
             setCurrentErasePath('');
+        }
+        else if (mode === Mode.SHAPE) {
+            setStartShapePoint(undefined);
+            setSavedPaths([...savedPaths, currentPath])
+            setCurrentPath('');
+            setIsCreatingShape(false)
         }
     };
 
@@ -152,6 +195,16 @@ export default function Canvas() {
                     fill="none"
                     stroke="black"
                     strokeWidth={currentStrokeWidth}
+                    strokeLinecap="round"
+                />
+            )}
+            {isErasing && currentErasePath && (
+                <path
+                    d={currentErasePath}
+                    fill="none"
+                    stroke="black"
+                    strokeWidth="1"
+                    stroke-dasharray="4 4"
                     strokeLinecap="round"
                 />
             )}
