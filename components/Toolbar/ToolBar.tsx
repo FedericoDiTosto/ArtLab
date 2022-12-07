@@ -1,6 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { FaPencilAlt, FaEraser, FaPenFancy } from "react-icons/fa";
-import { MdColorLens } from "react-icons/md";
+import { FaPencilAlt, FaEraser, FaPenFancy, FaRegSquare, FaRegCircle } from "react-icons/fa";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
 
@@ -37,18 +36,20 @@ export default function Toolbar() {
         console.log(savedPaths.length, savedPaths)
     }
 
-    const onShapeClick = () => {
+    const onRectangleClick = () => {
+        setShape("Rectangle");
         setMode(Mode.SHAPE)
     }
 
+    const onCircleClick = () => {
+        setShape("Circle");
+        setMode(Mode.SHAPE)
+    }
 
     const onStrokeWidthChange = (event: any) => {
         setStrokeWidth(event.target.value);
     };
 
-    const onShapeChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setShape(event.target.value);
-    };
 
     return (
         <div className={styles.toolbar}>
@@ -58,7 +59,7 @@ export default function Toolbar() {
             <button className={styles.toolbarButton} onClick={onEraserClick} title="eraser">
                 <FaEraser className={styles.toolbarIcon} />
             </button>
-            <button className={styles.toolbarButton} onClick={onPenClick}>
+            <button disabled onClick={onPenClick} >
                 <FaPenFancy className={styles.toolbarIcon} />
             </button>
             <div className={styles.boxSliderSrokeWidth} title="stroke">
@@ -72,11 +73,11 @@ export default function Toolbar() {
                 />
                 <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
             </div>
-            <button className={styles.toolbarButton} onClick={onShapeClick}>
-                <select value={shape} onChange={onShapeChange}>
-                    <option value="Rectangle">Rectangle</option>
-                    <option value="Circle">Circle</option>
-                </select>
+            <button className={styles.toolbarButton} onClick={onRectangleClick}>
+                <FaRegSquare className={styles.toolbarIcon} />
+            </button>
+            <button className={styles.toolbarButton} onClick={onCircleClick}>
+                <FaRegCircle className={styles.toolbarIcon} />
             </button>
         </div>
     );

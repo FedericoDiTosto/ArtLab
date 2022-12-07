@@ -3,3 +3,11 @@
 .canvas {
     background-color: #ffffff;
 }
+
+@media (max-width: 600px) {
+    .canvas {
+        width: 100%;
+        height: 100%;
+        max-height: calc(100% - 50px);
+    }
+}
