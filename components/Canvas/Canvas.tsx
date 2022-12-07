@@ -84,7 +84,13 @@ export default function Canvas() {
             setIsErasing(true)
         }
         else if (isCreatingShape && mode === Mode.SHAPE) {
-            setStartShapePoint([event.clientX, event.clientY]);
+            const target = event.target as Element;
+
+            // Get the bounding rectangle of the canvas SVG element
+            const svgRect = target.getBoundingClientRect();
+            const x = event.clientX - svgRect.left;
+            const y = event.clientY - svgRect.top;
+            setStartShapePoint([x, y]);
         }
     };
 
@@ -109,8 +115,15 @@ export default function Canvas() {
         else if (isCreatingShape && mode === Mode.SHAPE && startShapePoint) {
             // Calcola la dimensione della forma utilizzando le coordinate del mouse
             // e il punto iniziale della forma
-            const width = event.clientX - startShapePoint[0];
-            const height = event.clientY - startShapePoint[1];
+            const target = event.target as Element;
+
+            // Get the bounding rectangle of the canvas SVG element
+            const svgRect = target.getBoundingClientRect();
+            const x = event.clientX - svgRect.left;
+            const y = event.clientY - svgRect.top;
+
+            const width = x - startShapePoint[0];
+            const height = y - startShapePoint[1];
 
             // Usa la forma selezionata per determinare la stringa SVG da disegnare
             let svgPath = "";
