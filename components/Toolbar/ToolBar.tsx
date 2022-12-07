@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { FaPencilAlt, FaEraser } from "react-icons/fa";
+import { FaPencilAlt, FaEraser, FaPenFancy } from "react-icons/fa";
 import { MdColorLens } from "react-icons/md";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
@@ -24,6 +24,10 @@ export default function Toolbar() {
         setMode(Mode.ERASE)
     }
 
+    const onPenClick = () => {
+        setMode(Mode.PEN)
+    }
+
     const onStrokeWidthChange = (event: any) => {
         setStrokeWidth(event.target.value);
     };
@@ -36,17 +40,21 @@ export default function Toolbar() {
             <button className={styles.toolbarButton} onClick={onEraserClick}>
                 <FaEraser className={styles.toolbarIcon} />
             </button>
-            <button className={styles.toolbarButton} >
-                <MdColorLens className={styles.toolbarIcon} />
+            <button className={styles.toolbarButton} onClick={onPenClick}>
+                <FaPenFancy className={styles.toolbarIcon} />
             </button>
-            <input
-                type="range"
-                min="1"
-                max="10"
-                value={strokeWidth} // Aggiungi questa proprietà per collegare il valore dello strokeWidth al range
-                onChange={onStrokeWidthChange} // Aggiungi questa proprietà per gestire il cambiamento del valore
-            />
-            {strokeWidth}
+            <div className={styles.boxSliderSrokeWidth}>
+                <input
+                    className={styles.sliderSrokeWidth}
+                    type="range"
+                    min="1"
+                    max="20"
+                    value={strokeWidth} // Aggiungi questa proprietà per collegare il valore dello strokeWidth al range
+                    onChange={onStrokeWidthChange} // Aggiungi questa proprietà per gestire il cambiamento del valore
+                />
+                <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
+
+            </div>
         </div>
     );
 }
