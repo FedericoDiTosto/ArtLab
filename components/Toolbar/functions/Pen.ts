@@ -20,7 +20,7 @@ export function Pen() {
         setSavedPaths: state.setPaths,
     }));
 
-    const handleMouseClickPen = (event: MouseEvent<SVGSVGElement>, currentPath: string) => {
+    const handleMouseClickPen = (event: MouseEvent<SVGSVGElement>, currentPath: string, setPathStrokeWidths: Dispatch<SetStateAction<Map<string, number>>>) => {
         setIsDrawing(true);
         // Add a new point to the path
         const svg = event.currentTarget;
@@ -30,9 +30,10 @@ export function Pen() {
         const transformedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse());
         setPoints([...points, [transformedPoint.x, transformedPoint.y]]);
         setSavedPaths([...savedPaths, currentPath]);
+        setPathStrokeWidths(prev => prev.set(currentPath, strokeWidth));
     };
 
-    const handleMouseMovePen = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>) => {
+    const handleMouseMovePen = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
         if (isDrawing) {
             // Update the current path with the new point
             const svg = event.currentTarget;
@@ -41,6 +42,7 @@ export function Pen() {
             point.y = event.clientY;
             const transformedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse());
             const currentPath = `M${points[points.length - 1][0]},${points[points.length - 1][1]} C${points[points.length - 1][0]},${points[points.length - 1][1]} ${transformedPoint.x},${transformedPoint.y} ${transformedPoint.x},${transformedPoint.y}`;
+            setCurrentStrokeWidth(strokeWidth);
             setCurrentPath(currentPath);
         }
     };

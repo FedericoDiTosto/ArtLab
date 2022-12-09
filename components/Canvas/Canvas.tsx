@@ -12,6 +12,7 @@ import { Line } from '../Toolbar/functions/Line';
 
 export default function Canvas() {
     const svgRef = useRef<SVGSVGElement>(null);
+    const [currentZoom, setZoom] = useState(1);
     const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
     const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
     const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
@@ -97,10 +98,10 @@ export default function Canvas() {
                 handleMouseMoveShape(event, svgRef.current, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
                 break;
             case Mode.PEN:
-                handleMouseMovePen(event, setCurrentPath)
+                handleMouseMovePen(event, setCurrentPath, setCurrentStrokeWidth)
                 break;
             case Mode.LINE:
-                handleMouseMoveLine(event, setCurrentPath)
+                handleMouseMoveLine(event, setCurrentPath, setCurrentStrokeWidth)
                 break;
         }
     };
@@ -122,10 +123,10 @@ export default function Canvas() {
     const handleMouseClick = (event: MouseEvent<SVGSVGElement>,) => {
         switch (mode) {
             case Mode.PEN:
-                handleMouseClickPen(event, currentPath)
+                handleMouseClickPen(event, currentPath, setPathStrokeWidths)
                 break;
             case Mode.LINE:
-                handleMouseClickLine(event, currentPath)
+                handleMouseClickLine(event, currentPath, setPathStrokeWidths)
                 break;
         }
     };
@@ -133,6 +134,19 @@ export default function Canvas() {
     const handleKeyDown: KeyboardEventHandler = (event) => {
         if (event.ctrlKey && mode === Mode.PEN) {
             handleKeyClickPen(event, setCurrentPath);
+        }
+        if (event.ctrlKey && (event.key === '+' || event.key === '-')) {
+            event.preventDefault();
+
+            let newZoom = 1;
+            if (event.key === '+') {
+                newZoom = currentZoom + 0.5;
+            } else if (event.key === '-') {
+                newZoom = currentZoom - 0.5;
+            }
+
+            // Update the zoom level of the Canvas component
+            setZoom(newZoom);
         }
     };
 
@@ -143,6 +157,7 @@ export default function Canvas() {
             className={styles.canvas}
             width={1200}
             height={700}
+            transform={`scale(${currentZoom})`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
