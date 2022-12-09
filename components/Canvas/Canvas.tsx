@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from './Canvas.module.css'
 import { useState, MouseEvent } from 'react';
 import useCanvasStore from '../../store/canvasStore';
@@ -9,6 +9,7 @@ import { Shape } from '../Toolbar/functions/Shape';
 
 
 export default function Canvas() {
+    const svgRef = useRef<SVGSVGElement>(null);
     const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
     const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
     const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
@@ -86,7 +87,7 @@ export default function Canvas() {
                 handleMouseMoveErase(event, currentErasePath)
                 break;
             case Mode.SHAPE:
-                handleMouseMoveShape(event, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
+                handleMouseMoveShape(event, svgRef.current, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
                 break;
         }
     };
@@ -107,6 +108,7 @@ export default function Canvas() {
 
     return (
         <svg
+            ref={svgRef}
             className={styles.canvas}
             width={1200}
             height={700}

@@ -28,11 +28,9 @@ export function Shape() {
         }
     };
 
-    const handleMouseMoveShape = (event: MouseEvent<SVGSVGElement>, startShapePoint: [number, number] | undefined, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
-        if (isCreatingShape && startShapePoint) {
-            const target = event.target as HTMLElement;
-            event.stopPropagation()
-            const svgRect = target.getBoundingClientRect();
+    const handleMouseMoveShape = (event: MouseEvent<SVGSVGElement>, svgElement: SVGSVGElement | null, startShapePoint: [number, number] | undefined, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
+        const svgRect = svgElement?.getBoundingClientRect();
+        if (isCreatingShape && startShapePoint && svgRect) {
             const x = event.clientX - svgRect.left;
             const y = event.clientY - svgRect.top;
             const width = x - startShapePoint[0];
