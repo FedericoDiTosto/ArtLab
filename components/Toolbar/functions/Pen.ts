@@ -22,7 +22,6 @@ export function Pen() {
 
     const handleMouseClickPen = (event: MouseEvent<SVGSVGElement>, currentPath: string, setPathStrokeWidths: Dispatch<SetStateAction<Map<string, number>>>) => {
         setIsDrawing(true);
-        // Add a new point to the path
         const svg = event.currentTarget;
         const point = svg.createSVGPoint();
         point.x = event.clientX;
@@ -35,7 +34,6 @@ export function Pen() {
 
     const handleMouseMovePen = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
         if (isDrawing) {
-            // Update the current path with the new point
             const svg = event.currentTarget;
             const point = svg.createSVGPoint();
             point.x = event.clientX;

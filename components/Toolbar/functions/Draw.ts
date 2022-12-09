@@ -1,4 +1,4 @@
-import { useState, MouseEvent, SetStateAction, Dispatch } from 'react';
+import { MouseEvent, SetStateAction, Dispatch } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
 
 export function Draw() {

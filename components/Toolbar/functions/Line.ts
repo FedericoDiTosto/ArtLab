@@ -1,4 +1,4 @@
-import { useState, MouseEvent, SetStateAction, Dispatch } from 'react';
+import { MouseEvent, SetStateAction, Dispatch } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
 
 export function Line() {
@@ -21,6 +21,7 @@ export function Line() {
         if (points.length > 0) {
             event.preventDefault()
             setPathStrokeWidths(prev => prev.set(currentPath, strokeWidth));
+            setSavedPaths([...savedPaths, currentPath]);
             setIsDrawing(false);
             setPoints([])
             return;
@@ -32,13 +33,11 @@ export function Line() {
             point.y = event.clientY;
             const transformedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse());
             setPoints([...points, [transformedPoint.x, transformedPoint.y]]);
-            setSavedPaths([...savedPaths, currentPath]);
         }
     };
 
     const handleMouseMoveLine = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
         if (isDrawing) {
-            // Update the current path with the new point
             const svg = event.currentTarget;
             const point = svg.createSVGPoint();
             point.x = event.clientX;

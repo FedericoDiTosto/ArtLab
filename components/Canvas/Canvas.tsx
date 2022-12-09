@@ -28,7 +28,6 @@ export default function Canvas() {
     }));
     const isDrawing = useCanvasStore((state) => state.drawing)
     const isErasing = useCanvasStore((state) => state.erasing)
-    const isCreatingShape = useCanvasStore((state) => state.shape)
     const { points } = useCanvasStore((state) => ({
         points: state.points,
     }));
@@ -80,9 +79,6 @@ export default function Canvas() {
             case Mode.SHAPE:
                 handleMouseDownShape(event, setStartShapePoint, currentPath, setPathStrokeWidths)
                 break;
-            /* case Mode.PEN:
-                handleMouseDownPen(event, setCurrentPath)
-                break */
         }
     };
 
@@ -144,8 +140,6 @@ export default function Canvas() {
             } else if (event.key === '-') {
                 newZoom = currentZoom - 0.5;
             }
-
-            // Update the zoom level of the Canvas component
             setZoom(newZoom);
         }
     };

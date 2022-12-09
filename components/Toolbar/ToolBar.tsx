@@ -1,4 +1,3 @@
-import { ChangeEvent, useState } from "react";
 import { FaPencilAlt, FaEraser, FaPenNib, FaRegSquare, FaSlash, FaRegCircle } from "react-icons/fa";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
@@ -9,10 +8,6 @@ export default function Toolbar() {
     const { mode, setMode } = useUiStore((state) => ({
         mode: state.mode,
         setMode: state.setMode,
-    }));
-    const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({
-        savedPaths: state.paths,
-        setSavedPaths: state.setPaths,
     }));
     const { strokeWidth, setStrokeWidth } = useCanvasStore((state) => ({
         strokeWidth: state.strokeWidth,
@@ -67,8 +62,8 @@ export default function Toolbar() {
                     type="range"
                     min="1"
                     max="20"
-                    value={strokeWidth} // Aggiungi questa proprietà per collegare il valore dello strokeWidth al range
-                    onChange={onStrokeWidthChange} // Aggiungi questa proprietà per gestire il cambiamento del valore
+                    value={strokeWidth}
+                    onChange={onStrokeWidthChange}
                 />
                 <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
             </div>

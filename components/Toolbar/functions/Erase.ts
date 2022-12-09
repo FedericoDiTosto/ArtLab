@@ -1,6 +1,5 @@
-import { useState, MouseEvent, Dispatch, SetStateAction } from 'react';
+import { MouseEvent, Dispatch, SetStateAction } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
-import useUiStore, { Mode } from '../../../store/ui';
 import { isPointInPath } from '../../Canvas/pathFunctions';
 
 export function Erase() {

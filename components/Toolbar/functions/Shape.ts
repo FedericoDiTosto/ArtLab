@@ -1,6 +1,5 @@
-import { useState, MouseEvent, SetStateAction, Dispatch } from 'react';
+import { MouseEvent, SetStateAction, Dispatch } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
-import useUiStore, { Mode } from '../../../store/ui';
 
 export function Shape() {
     const { shape } = useCanvasStore((state) => ({
