@@ -1,8 +1,10 @@
 .canvasContainer {}
 
 .canvas {
+    outline: none;
     background-color: #ffffff;
 }
+
 
 @media (max-width: 600px) {
     .canvas {

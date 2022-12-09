@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { FaPencilAlt, FaEraser, FaPenFancy, FaRegSquare, FaRegCircle } from "react-icons/fa";
+import { FaPencilAlt, FaEraser, FaPenNib, FaRegSquare, FaSlash, FaRegCircle } from "react-icons/fa";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
 
@@ -23,27 +23,11 @@ export default function Toolbar() {
         setShape: state.setShape
     }));
 
-    const onPencilClick = () => {
-        // Richiama la funzione setMode per impostare la modalità su DRAW
-        setMode(Mode.DRAW);
-    }
-    const onEraserClick = () => {
-        setMode(Mode.ERASE)
-    }
-
-    const onPenClick = () => {
-        setMode(Mode.PEN)
-        console.log(savedPaths.length, savedPaths)
-    }
-
-    const onRectangleClick = () => {
-        setShape("Rectangle");
-        setMode(Mode.SHAPE)
-    }
-
-    const onCircleClick = () => {
-        setShape("Circle");
-        setMode(Mode.SHAPE)
+    const changeMode = (newMode: Mode, shapeType?: string) => {
+        setMode(newMode)
+        if (shapeType) {
+            setShape(shapeType);
+        }
     }
 
     const onStrokeWidthChange = (event: any) => {
@@ -53,14 +37,29 @@ export default function Toolbar() {
 
     return (
         <div className={styles.toolbar}>
-            <button className={styles.toolbarButton} onClick={onPencilClick} title="pencil">
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.DRAW)} title="pencil">
                 <FaPencilAlt className={styles.toolbarIcon} />
+                {mode == Mode.DRAW ? <h4>&nbsp;draw</h4> : null}
             </button>
-            <button className={styles.toolbarButton} onClick={onEraserClick} title="eraser">
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.ERASE)} title="eraser">
                 <FaEraser className={styles.toolbarIcon} />
+                {mode == Mode.ERASE ? <h4>&nbsp;erase</h4> : null}
             </button>
-            <button disabled onClick={onPenClick} >
-                <FaPenFancy className={styles.toolbarIcon} />
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.PEN)} title="pen">
+                <FaPenNib className={styles.toolbarIcon} />
+                {mode == Mode.PEN ? <h4>&nbsp;pen</h4> : null}
+            </button>
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.LINE)} title="line">
+                <FaSlash className={styles.toolbarIcon} />
+                {mode == Mode.LINE ? <h4>&nbsp;line</h4> : null}
+            </button>
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SHAPE, "Rectangle")} title="rectangle">
+                <FaRegSquare className={styles.toolbarIcon} />
+                {mode == Mode.SHAPE && shape == "Rectangle" ? <h4>&nbsp;rectangle</h4> : null}
+            </button>
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SHAPE, "Circle")} title="circle">
+                <FaRegCircle className={styles.toolbarIcon} />
+                {mode == Mode.SHAPE && shape == "Circle" ? <h4>&nbsp;circle</h4> : null}
             </button>
             <div className={styles.boxSliderSrokeWidth} title="stroke">
                 <input
@@ -73,12 +72,7 @@ export default function Toolbar() {
                 />
                 <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
             </div>
-            <button className={styles.toolbarButton} onClick={onRectangleClick}>
-                <FaRegSquare className={styles.toolbarIcon} />
-            </button>
-            <button className={styles.toolbarButton} onClick={onCircleClick}>
-                <FaRegCircle className={styles.toolbarIcon} />
-            </button>
+
         </div>
     );
 }

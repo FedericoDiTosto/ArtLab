@@ -5,6 +5,7 @@ export enum Mode {
     ERASE,
     PEN,
     SHAPE,
+    LINE
 }
 
 interface Ui {

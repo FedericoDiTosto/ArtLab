@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { KeyboardEventHandler, useEffect, useRef } from 'react';
 import styles from './Canvas.module.css'
 import { useState, MouseEvent } from 'react';
 import useCanvasStore from '../../store/canvasStore';
@@ -6,6 +6,8 @@ import useUiStore, { Mode } from "../../store/ui";
 import { Draw } from '../Toolbar/functions/Draw';
 import { Erase } from '../Toolbar/functions/Erase';
 import { Shape } from '../Toolbar/functions/Shape';
+import { Pen } from '../Toolbar/functions/Pen';
+import { Line } from '../Toolbar/functions/Line';
 
 
 export default function Canvas() {
@@ -13,6 +15,8 @@ export default function Canvas() {
     const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
     const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
     const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
+    const { handleMouseMovePen, handleMouseClickPen, handleKeyClickPen } = Pen();
+    const { handleMouseMoveLine, handleMouseClickLine } = Line();
     const { mode } = useUiStore((state) => ({
         mode: state.mode,
     }));
@@ -62,7 +66,7 @@ export default function Canvas() {
                     .join("");
             setCurrentErasePath(currentPath);
         }
-    }), [erasePoints]
+    }, [erasePoints]);
 
     const handleMouseDown = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
@@ -75,6 +79,9 @@ export default function Canvas() {
             case Mode.SHAPE:
                 handleMouseDownShape(event, setStartShapePoint, currentPath, setPathStrokeWidths)
                 break;
+            /* case Mode.PEN:
+                handleMouseDownPen(event, setCurrentPath)
+                break */
         }
     };
 
@@ -88,6 +95,12 @@ export default function Canvas() {
                 break;
             case Mode.SHAPE:
                 handleMouseMoveShape(event, svgRef.current, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
+                break;
+            case Mode.PEN:
+                handleMouseMovePen(event, setCurrentPath)
+                break;
+            case Mode.LINE:
+                handleMouseMoveLine(event, setCurrentPath)
                 break;
         }
     };
@@ -106,15 +119,35 @@ export default function Canvas() {
         }
     };
 
+    const handleMouseClick = (event: MouseEvent<SVGSVGElement>,) => {
+        switch (mode) {
+            case Mode.PEN:
+                handleMouseClickPen(event, currentPath)
+                break;
+            case Mode.LINE:
+                handleMouseClickLine(event, currentPath)
+                break;
+        }
+    };
+
+    const handleKeyDown: KeyboardEventHandler = (event) => {
+        if (event.ctrlKey && mode === Mode.PEN) {
+            handleKeyClickPen(event, setCurrentPath);
+        }
+    };
+
     return (
         <svg
             ref={svgRef}
+            tabIndex={0}
             className={styles.canvas}
             width={1200}
             height={700}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onClick={handleMouseClick}
+            onKeyDown={handleKeyDown}
         >
             {savedPaths.map((path, index) => (
                 <path
@@ -141,7 +174,7 @@ export default function Canvas() {
                     fill="none"
                     stroke="black"
                     strokeWidth="1"
-                    stroke-dasharray="4 4"
+                    strokeDasharray="4 4"
                     strokeLinecap="round"
                 />
             )}

@@ -29,9 +29,7 @@ export function Erase() {
             setErasePoints([...erasePoints, [transformedPoint.x, transformedPoint.y]]);
             savedPaths.forEach((elm) => {
                 if (isPointInPath(currentErasePath, String(elm))) {
-                    console.log(savedPaths)
                     setSavedPaths(savedPaths.filter(path => path !== String(elm)))
-                    console.log(savedPaths)
                 }
             })
         }
