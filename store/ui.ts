@@ -1,6 +1,7 @@
 import create from 'zustand'
 
 export enum Mode {
+    SELECT,
     DRAW,
     ERASE,
     PEN,
@@ -14,7 +15,7 @@ interface Ui {
 }
 
 const useUiStore = create<Ui>((set) => ({
-    mode: Mode.DRAW,
+    mode: Mode.SELECT,
     setMode: (mode: Mode) => set(() => ({ mode: mode })),
 }))
 

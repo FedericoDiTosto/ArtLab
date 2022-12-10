@@ -1,6 +1,6 @@
 import { MouseEvent, Dispatch, SetStateAction } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
-import { isPointInPath } from '../../Canvas/pathFunctions';
+import { pathIntersection } from '../../Canvas/pathFunctions';
 
 export function Erase() {
     const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({
@@ -27,7 +27,7 @@ export function Erase() {
             const transformedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse());
             setErasePoints([...erasePoints, [transformedPoint.x, transformedPoint.y]]);
             savedPaths.forEach((elm) => {
-                if (isPointInPath(currentErasePath, String(elm))) {
+                if (pathIntersection(currentErasePath, String(elm))) {
                     setSavedPaths(savedPaths.filter(path => path !== String(elm)))
                 }
             })

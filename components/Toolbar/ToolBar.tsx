@@ -1,4 +1,4 @@
-import { FaPencilAlt, FaEraser, FaPenNib, FaRegSquare, FaSlash, FaRegCircle } from "react-icons/fa";
+import { FaPencilAlt, FaEraser, FaPenNib, FaRegSquare, FaSlash, FaRegCircle, FaLocationArrow } from "react-icons/fa";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
 
@@ -32,6 +32,10 @@ export default function Toolbar() {
 
     return (
         <div className={styles.toolbar}>
+            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SELECT)} title="select">
+                <FaLocationArrow className={styles.toolbarIcon} />
+                {mode == Mode.SELECT ? <h4>&nbsp;select</h4> : null}
+            </button>
             <button className={styles.toolbarButton} onClick={() => changeMode(Mode.DRAW)} title="pencil">
                 <FaPencilAlt className={styles.toolbarIcon} />
                 {mode == Mode.DRAW ? <h4>&nbsp;draw</h4> : null}

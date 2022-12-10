@@ -8,11 +8,13 @@ import { Erase } from '../Toolbar/functions/Erase';
 import { Shape } from '../Toolbar/functions/Shape';
 import { Pen } from '../Toolbar/functions/Pen';
 import { Line } from '../Toolbar/functions/Line';
+import { Select } from '../Toolbar/functions/Select';
 
 
 export default function Canvas() {
     const svgRef = useRef<SVGSVGElement>(null);
     const [currentZoom, setZoom] = useState(1);
+    const { handleMouseDownSelect, handleMouseUpSelect, handleMouseMoveSelect } = Select();
     const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
     const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
     const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
@@ -23,11 +25,14 @@ export default function Canvas() {
     }));
     const [currentPath, setCurrentPath] = useState<string>('');
     const [currentErasePath, setCurrentErasePath] = useState<string>('');
-    const { savedPaths } = useCanvasStore((state) => ({
+    const [currentSelectPath, setCurrentSelectPath] = useState<string>('');
+    const { savedPaths, selectedPaths } = useCanvasStore((state) => ({
         savedPaths: state.paths,
+        selectedPaths: state.selectedPaths
     }));
     const isDrawing = useCanvasStore((state) => state.drawing)
     const isErasing = useCanvasStore((state) => state.erasing)
+    const isSelecting = useCanvasStore((state) => state.selecting)
     const { points } = useCanvasStore((state) => ({
         points: state.points,
     }));
@@ -70,6 +75,9 @@ export default function Canvas() {
 
     const handleMouseDown = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
+            case Mode.SELECT:
+                handleMouseDownSelect(event, setStartShapePoint)
+                break;
             case Mode.DRAW:
                 handleMouseDownDraw(event, currentPath, setPathStrokeWidths)
                 break;
@@ -84,6 +92,9 @@ export default function Canvas() {
 
     const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
+            case Mode.SELECT:
+                handleMouseMoveSelect(event, svgRef.current, startShapePoint, setCurrentSelectPath)
+                break;
             case Mode.DRAW:
                 handleMouseMoveDraw(event, setCurrentStrokeWidth)
                 break;
@@ -104,6 +115,9 @@ export default function Canvas() {
 
     const handleMouseUp = (event: MouseEvent<SVGSVGElement>,) => {
         switch (mode) {
+            case Mode.SELECT:
+                handleMouseUpSelect(event, setStartShapePoint, currentSelectPath, setCurrentSelectPath)
+                break;
             case Mode.DRAW:
                 handleMouseUpDraw(event, setCurrentPath, setPathStrokeWidths)
                 break;
@@ -158,8 +172,8 @@ export default function Canvas() {
             onClick={handleMouseClick}
             onKeyDown={handleKeyDown}
         >
-            {savedPaths.map((path, index) => (
-                <path
+            {savedPaths.filter((path) => !selectedPaths.includes(path)).map((path, index) => (
+                < path
                     key={index}
                     d={path}
                     fill="none"
@@ -167,6 +181,26 @@ export default function Canvas() {
                     strokeWidth={pathStrokeWidths.get(path)}
                     strokeLinecap="round"
                 />
+            ))}
+            {selectedPaths.map((path, index) => (
+                <>
+                    <path
+                        key={index}
+                        d={path}
+                        fill="none"
+                        stroke="black"
+                        strokeWidth={pathStrokeWidths.get(path)}
+                        strokeLinecap="round"
+                    />
+                    < path
+                        key={index}
+                        d={path}
+                        fill="none"
+                        stroke="#00A2FF"
+                        strokeWidth={1}
+                        strokeLinecap="round"
+                    />
+                </>
             ))}
             {currentPath && (
                 <path
@@ -184,6 +218,15 @@ export default function Canvas() {
                     stroke="black"
                     strokeWidth="1"
                     strokeDasharray="4 4"
+                    strokeLinecap="round"
+                />
+            )}
+            {currentSelectPath && (
+                <path
+                    d={currentSelectPath}
+                    fill="#0082ce16"
+                    stroke="#00A2FF"
+                    strokeWidth="1"
                     strokeLinecap="round"
                 />
             )}
