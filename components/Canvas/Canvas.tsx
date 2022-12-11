@@ -1,4 +1,4 @@
-import { KeyboardEventHandler, useEffect, useRef } from 'react';
+import { KeyboardEventHandler, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import styles from './Canvas.module.css'
 import { useState, MouseEvent } from 'react';
 import useCanvasStore from '../../store/canvasStore';
@@ -9,17 +9,13 @@ import { Shape } from '../Toolbar/functions/Shape';
 import { Pen } from '../Toolbar/functions/Pen';
 import { Line } from '../Toolbar/functions/Line';
 import { Select } from '../Toolbar/functions/Select';
-
+import { useEraseUpdatePoints } from './hook/useEraseUpdatePoints';
+import { useUpdatePoints } from './hook/useUpdatePoints';
 
 export default function Canvas() {
     const svgRef = useRef<SVGSVGElement>(null);
     const [currentZoom, setZoom] = useState(1);
-    const { handleMouseDownSelect, handleMouseUpSelect, handleMouseMoveSelect } = Select();
-    const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
-    const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
-    const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
-    const { handleMouseMovePen, handleMouseClickPen, handleKeyClickPen } = Pen();
-    const { handleMouseMoveLine, handleMouseClickLine } = Line();
+
     const { mode } = useUiStore((state) => ({
         mode: state.mode,
     }));
@@ -30,114 +26,70 @@ export default function Canvas() {
         savedPaths: state.paths,
         selectedPaths: state.selectedPaths
     }));
-    const isDrawing = useCanvasStore((state) => state.drawing)
-    const isErasing = useCanvasStore((state) => state.erasing)
-    const isSelecting = useCanvasStore((state) => state.selecting)
-    const { points } = useCanvasStore((state) => ({
-        points: state.points,
-    }));
-    const { erasePoints } = useCanvasStore((state) => ({
-        erasePoints: state.erasePoints,
-    }));
+
+    const { handleMouseDownSelect, handleMouseUpSelect, handleMouseMoveSelect } = Select();
+    const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
+    const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
+    const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
+    const { handleMouseMovePen, handleMouseClickPen, handleKeyClickPen } = Pen();
+    const { handleMouseMoveLine, handleMouseClickLine } = Line();
+
     const [currentStrokeWidth, setCurrentStrokeWidth] = useState<number>();
     const [pathStrokeWidths, setPathStrokeWidths] = useState<Map<string, number>>(new Map())
     const [startShapePoint, setStartShapePoint] = useState<[number, number]>();
 
-    useEffect(() => {
-        if (mode === Mode.DRAW && isDrawing && points.length > 0) {
-            const currentPath = `M${points[0][0]},${points[0][1]} C${points[0][0]},${points[0][1]}` +
-                points
-                    .slice(1)
-                    .map(
-                        (point) =>
-                            ` ${point[0]},${point[1]} ${point[0]},${point[1]}`
-                    )
-                    .join("");
-
-            setCurrentPath(currentPath);
-        }
-    }, [points]);
-
-    useEffect(() => {
-        if (mode === Mode.ERASE && isErasing && erasePoints.length > 0) {
-            setCurrentErasePath("");
-            const currentPath = `M${erasePoints[0][0]},${erasePoints[0][1]} C${erasePoints[0][0]},${erasePoints[0][1]}` +
-                erasePoints
-                    .slice(1)
-                    .map(
-                        (point) =>
-                            ` ${point[0]},${point[1]} ${point[0]},${point[1]}`
-                    )
-                    .join("");
-            setCurrentErasePath(currentPath);
-        }
-    }, [erasePoints]);
+    const isDrawing = useUpdatePoints(mode, setCurrentPath)
+    const isErasing = useEraseUpdatePoints(mode, setCurrentErasePath)
 
     const handleMouseDown = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
             case Mode.SELECT:
-                handleMouseDownSelect(event, setStartShapePoint)
-                break;
+                return handleMouseDownSelect(event, setStartShapePoint)
             case Mode.DRAW:
-                handleMouseDownDraw(event, currentPath, setPathStrokeWidths)
-                break;
+                return handleMouseDownDraw(event, currentPath, setPathStrokeWidths)
             case Mode.ERASE:
-                handleMouseDownErase(event)
-                break;
+                return handleMouseDownErase(event)
             case Mode.SHAPE:
-                handleMouseDownShape(event, setStartShapePoint, currentPath, setPathStrokeWidths)
-                break;
+                return handleMouseDownShape(event, setStartShapePoint, currentPath, setPathStrokeWidths)
         }
     };
 
     const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
             case Mode.SELECT:
-                handleMouseMoveSelect(event, svgRef.current, startShapePoint, setCurrentSelectPath)
-                break;
+                return handleMouseMoveSelect(event, svgRef.current, startShapePoint, setCurrentSelectPath)
             case Mode.DRAW:
-                handleMouseMoveDraw(event, setCurrentStrokeWidth)
-                break;
+                return handleMouseMoveDraw(event, setCurrentStrokeWidth)
             case Mode.ERASE:
-                handleMouseMoveErase(event, currentErasePath)
-                break;
+                return handleMouseMoveErase(event, currentErasePath)
             case Mode.SHAPE:
-                handleMouseMoveShape(event, svgRef.current, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
-                break;
+                return handleMouseMoveShape(event, svgRef.current, startShapePoint, setCurrentPath, setCurrentStrokeWidth)
             case Mode.PEN:
-                handleMouseMovePen(event, setCurrentPath, setCurrentStrokeWidth)
-                break;
+                return handleMouseMovePen(event, setCurrentPath, setCurrentStrokeWidth)
             case Mode.LINE:
-                handleMouseMoveLine(event, setCurrentPath, setCurrentStrokeWidth)
-                break;
+                return handleMouseMoveLine(event, setCurrentPath, setCurrentStrokeWidth)
         }
     };
 
-    const handleMouseUp = (event: MouseEvent<SVGSVGElement>,) => {
+    const handleMouseUp = (event: MouseEvent<SVGSVGElement>) => {
         switch (mode) {
             case Mode.SELECT:
-                handleMouseUpSelect(event, setStartShapePoint, currentSelectPath, setCurrentSelectPath)
-                break;
+                return handleMouseUpSelect(event, setStartShapePoint, currentSelectPath, setCurrentSelectPath)
             case Mode.DRAW:
-                handleMouseUpDraw(event, setCurrentPath, setPathStrokeWidths)
-                break;
+                return handleMouseUpDraw(event, setCurrentPath, setPathStrokeWidths)
             case Mode.ERASE:
-                handleMouseUpErase(event, setCurrentErasePath)
-                break;
+                return handleMouseUpErase(event, setCurrentErasePath)
             case Mode.SHAPE:
-                handleMouseUpShape(event, setStartShapePoint, currentPath, setCurrentPath, setPathStrokeWidths)
-                break;
+                return handleMouseUpShape(event, setStartShapePoint, currentPath, setCurrentPath, setPathStrokeWidths)
         }
     };
 
     const handleMouseClick = (event: MouseEvent<SVGSVGElement>,) => {
         switch (mode) {
             case Mode.PEN:
-                handleMouseClickPen(event, currentPath, setPathStrokeWidths)
-                break;
+                return handleMouseClickPen(event, currentPath, setPathStrokeWidths)
             case Mode.LINE:
-                handleMouseClickLine(event, currentPath, setPathStrokeWidths)
-                break;
+                return handleMouseClickLine(event, currentPath, setPathStrokeWidths)
         }
     };
 
