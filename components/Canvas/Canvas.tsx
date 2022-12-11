@@ -30,7 +30,7 @@ export default function Canvas() {
     const { handleMouseDownSelect, handleMouseUpSelect, handleMouseMoveSelect } = Select();
     const { handleMouseDownDraw, handleMouseUpDraw, handleMouseMoveDraw } = Draw();
     const { handleMouseDownErase, handleMouseUpErase, handleMouseMoveErase } = Erase();
-    const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape } = Shape();
+    const { handleMouseDownShape, handleMouseUpShape, handleMouseMoveShape, handlekeyDownShape, handleKeyUpShape } = Shape();
     const { handleMouseMovePen, handleMouseClickPen, handleKeyClickPen } = Pen();
     const { handleMouseMoveLine, handleMouseClickLine } = Line();
 
@@ -108,6 +108,15 @@ export default function Canvas() {
             }
             setZoom(newZoom);
         }
+        if (mode == Mode.SHAPE) {
+            handlekeyDownShape(event)
+        }
+    };
+
+    const handleKeyUp: KeyboardEventHandler = (event) => {
+        if (mode === Mode.SHAPE) {
+            handleKeyUpShape(event);
+        }
     };
 
     return (
@@ -123,6 +132,7 @@ export default function Canvas() {
             onMouseUp={handleMouseUp}
             onClick={handleMouseClick}
             onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
         >
             {savedPaths.filter((path) => !selectedPaths.includes(path)).map((path, index) => (
                 < path
