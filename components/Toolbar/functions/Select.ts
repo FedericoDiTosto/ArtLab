@@ -1,6 +1,6 @@
 import { MouseEvent, SetStateAction, Dispatch } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
-import { isPathInRectangle, pathIntersection } from '../../Canvas/pathFunctions'
+import { isPathInRectangle, pathIntersection } from '../../Canvas/functions/pathFunctions'
 
 export function Select() {
     const { shape } = useCanvasStore((state) => ({
@@ -37,7 +37,6 @@ export function Select() {
     const handleMouseUpSelect = (event: MouseEvent<SVGSVGElement>, setStartShapePoint: Dispatch<SetStateAction<[number, number] | undefined>>, currentSelectPath: string, setCurrentSelectPath: Dispatch<SetStateAction<string>>) => {
         const selectedPaths = savedPaths.filter(path => pathIntersection(path, currentSelectPath) || isPathInRectangle(path, currentSelectPath));
         setSelectedPaths(selectedPaths);
-        console.log(selectedPaths)
         setStartShapePoint(undefined);
         setCurrentSelectPath('');
     };

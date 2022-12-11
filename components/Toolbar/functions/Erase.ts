@@ -1,6 +1,6 @@
 import { MouseEvent, Dispatch, SetStateAction } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
-import { pathIntersection } from '../../Canvas/pathFunctions';
+import { pathIntersection } from '../../Canvas/functions/pathFunctions';
 
 export function Erase() {
     const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({

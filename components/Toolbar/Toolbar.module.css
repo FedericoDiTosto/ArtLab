@@ -1,6 +1,6 @@
 .toolbar {
     position: absolute;
-    height: 50%;
+    height: 80%;
     width: 9em;
     align-items: center;
     justify-content: space-around;
@@ -16,8 +16,8 @@
     align-items: center;
     justify-content: center;
     width: fit-content;
-    min-width: 3em;
-    height: 3em;
+    min-width: 3.5em;
+    height: 3.5em;
     border-radius: 25px;
     background-color: black;
     color: white;

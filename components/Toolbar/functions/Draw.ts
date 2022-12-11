@@ -1,5 +1,6 @@
 import { MouseEvent, SetStateAction, Dispatch } from 'react';
 import useCanvasStore from '../../../store/canvasStore';
+import { interpolate } from '../../Canvas/functions/simplifyPath'
 
 export function Draw() {
     const { savedPaths, setSavedPaths } = useCanvasStore((state) => ({
@@ -35,18 +36,20 @@ export function Draw() {
 
     const handleMouseUpDraw = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setPathStrokeWidths: Dispatch<SetStateAction<Map<string, number>>>) => {
         setIsDrawing(false);
+        const interpolatedPoints = interpolate(points);
+        setPoints(interpolatedPoints);
         const currentPath =
             points.length === 0
                 ? ""
-                : `M${points[0][0]},${points[0][1]} C${points[0][0]},${points[0][1]}` +
-                points
+                : `M${interpolatedPoints[0][0]},${interpolatedPoints[0][1]} C${interpolatedPoints[0][0]},${interpolatedPoints[0][1]}` +
+                interpolatedPoints
                     .slice(1)
                     .map(
                         (point) =>
                             ` ${point[0]},${point[1]} ${point[0]},${point[1]}`
                     )
                     .join("");
-
+        setCurrentPath(currentPath);
         setSavedPaths([...savedPaths, currentPath]);
         setPoints([]);
         setPathStrokeWidths(prev => prev.set(currentPath, strokeWidth));
