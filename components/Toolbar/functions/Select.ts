@@ -35,7 +35,9 @@ export function Select() {
     };
 
     const handleMouseUpSelect = (event: MouseEvent<SVGSVGElement>, setStartShapePoint: Dispatch<SetStateAction<[number, number] | undefined>>, currentSelectPath: string, setCurrentSelectPath: Dispatch<SetStateAction<string>>) => {
-        const selectedPaths = savedPaths.filter(path => pathIntersection(path, currentSelectPath) || isPathInRectangle(path, currentSelectPath));
+        const selectedPaths = savedPaths.filter(path =>
+            (pathIntersection(path, currentSelectPath) || isPathInRectangle(path, currentSelectPath))
+        );
         setSelectedPaths(selectedPaths);
         setStartShapePoint(undefined);
         setCurrentSelectPath('');

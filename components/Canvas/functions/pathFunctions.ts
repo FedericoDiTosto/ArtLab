@@ -34,12 +34,15 @@ function getRectangleVertices(path: string): [number, number][] {
 
 function isPointInsideRectangle(point: [number, number], vertices: [number, number][]): boolean {
     if (vertices.length >= 4) {
-        const [x1, y1] = vertices[0];
-        const [x2, y2] = vertices[1];
-        const [x3, y3] = vertices[2];
-        const [x4, y4] = vertices[3];
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        for (const [x, y] of vertices) {
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
         const [px, py] = point;
-        return px >= x1 && px <= x2 && py >= y1 && py <= y3;
+        return px >= minX && px <= maxX && py >= minY && py <= maxY;
     } else {
         return false;
     }
@@ -96,17 +99,18 @@ function isCircleInRectangle(pathCircle: string, pathRectangle: string): boolean
 function isSegmentInRectangle(pathSegment: string, pathRectangle: string) {
     let [segmentP1x, segmentP1y, segmentP2x, segmentP2y] = getFirstAndLastPoints(pathSegment)
     let rectagleVertices = getRectangleVertices(pathRectangle)
+    //console.log(pathSegment, isPointInsideRectangle([segmentP1x, segmentP1y], rectagleVertices) && isPointInsideRectangle([segmentP2x, segmentP2y], rectagleVertices))
     return isPointInsideRectangle([segmentP1x, segmentP1y], rectagleVertices) && isPointInsideRectangle([segmentP2x, segmentP2y], rectagleVertices)
 }
 
 export function isPathInRectangle(path: string, pathRectangle: string): boolean {
-    if (path.startsWith('M') && path.includes('C')) {
-        return isSegmentInRectangle(path, pathRectangle);
-    } else if (path.startsWith('M') && path.includes('h')) {
+    if (path.startsWith('M') && path.includes('h')) {
         return isRectangleInsideRectangle(path, pathRectangle);
     } else if (path.startsWith('M') && path.includes('m') && path.includes('a')) {
         return isCircleInRectangle(path, pathRectangle);
-    } else {
-        return false;
+    }
+    else {
+        //console.log(path, isSegmentInRectangle(path, pathRectangle))
+        return isSegmentInRectangle(path, pathRectangle);
     }
 }

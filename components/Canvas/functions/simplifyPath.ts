@@ -10,13 +10,10 @@ export function interpolate(points: [number, number][]) {
         const prev = points[i - 1];
         const current = points[i];
         const distance = Math.sqrt((current[0] - prev[0]) ** 2 + (current[1] - prev[1]) ** 2);
-        if (distance > avgDistance) {
-            const x = prev[0] + (current[0] - prev[0]) * avgDistance / distance;
-            const y = prev[1] + (current[1] - prev[1]) * avgDistance / distance;
-            interpolatedPoints.push([x, y]);
+        if (distance < avgDistance * 1.5) {
+            interpolatedPoints.push(current);
         }
-        interpolatedPoints.push(current);
     }
-
+    console.log(points.length, interpolatedPoints.length)
     return interpolatedPoints;
 }
