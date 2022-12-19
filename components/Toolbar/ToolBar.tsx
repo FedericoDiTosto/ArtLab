@@ -32,46 +32,31 @@ export default function Toolbar() {
 
     return (
         <div className={styles.toolbar}>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SELECT)} title="select">
+            <div className={mode !== Mode.SELECT ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SELECT)} title="select">
                 <FaLocationArrow className={styles.toolbarIcon} />
-                {mode == Mode.SELECT ? <h4>&nbsp;select</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.DRAW)} title="pencil">
-                <FaPencilAlt className={styles.toolbarIcon} />
-                {mode == Mode.DRAW ? <h4>&nbsp;draw</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.ERASE)} title="eraser">
-                <FaEraser className={styles.toolbarIcon} />
-                {mode == Mode.ERASE ? <h4>&nbsp;erase</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.PEN)} title="pen">
-                <FaPenNib className={styles.toolbarIcon} />
-                {mode == Mode.PEN ? <h4>&nbsp;pen</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.LINE)} title="line">
-                <FaSlash className={styles.toolbarIcon} />
-                {mode == Mode.LINE ? <h4>&nbsp;line</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SHAPE, "Rectangle")} title="rectangle">
-                <FaRegSquare className={styles.toolbarIcon} />
-                {mode == Mode.SHAPE && shape == "Rectangle" ? <h4>&nbsp;rectangle</h4> : null}
-            </button>
-            <button className={styles.toolbarButton} onClick={() => changeMode(Mode.SHAPE, "Circle")} title="circle">
-                <FaRegCircle className={styles.toolbarIcon} />
-                {mode == Mode.SHAPE && shape == "Circle" ? <h4>&nbsp;circle</h4> : null}
-            </button>
-            <div className={styles.boxSliderSrokeWidth} title="stroke">
-                <input
-                    className={styles.sliderSrokeWidth}
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={strokeWidth}
-                    onChange={onStrokeWidthChange}
-                />
-                <div className={styles.spanStrokeWidth}>{strokeWidth}</div>
             </div>
-
+            <div className={mode !== Mode.DRAW ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.DRAW)} title="pencil">
+                <FaPencilAlt className={styles.toolbarIcon} />
+            </div>
+            <div className={mode !== Mode.ERASE ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.ERASE)} title="eraser">
+                <FaEraser className={styles.toolbarIcon} />
+            </div>
+            <div className={mode !== Mode.PEN ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.PEN)} title="pen">
+                <FaPenNib className={styles.toolbarIcon} />
+            </div>
+            <div className={mode !== Mode.LINE ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.LINE)} title="line">
+                <FaSlash className={styles.toolbarIcon} />
+            </div>
+            <div className={mode !== Mode.SHAPE || shape !== "Rectangle" ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SHAPE, "Rectangle")} title="rectangle">
+                <FaRegSquare className={styles.toolbarIcon} />
+            </div>
+            <div className={mode !== Mode.SHAPE || shape !== "Circle" ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SHAPE, "Circle")} title="circle">
+                <FaRegCircle className={styles.toolbarIcon} />
+            </div>
+            <div className={styles.boxSliderSrokeWidth} title="stroke">
+                <input type="number" min="0.25" max="100" value={strokeWidth} onChange={onStrokeWidthChange} />
+                <div className={styles.spanStrokeWidth}>px</div>
+            </div>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import Toolbar from '../components/Toolbar/ToolBar';
 export default function Home() {
 
   return (
-    <div>
+    <>
       <Toolbar />
       <div className={styles.scrollContainer}>
         <div className={styles.scroll}>
@@ -14,7 +14,7 @@ export default function Home() {
           <Canvas />
         </div >
       </div>
-    </div>
+    </>
 
   )
 }

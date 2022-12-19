@@ -21,7 +21,9 @@ export function Pen() {
     }));
 
     const handleMouseClickPen = (event: MouseEvent<SVGSVGElement>, currentPath: string, setPathStrokeWidths: Dispatch<SetStateAction<Map<string, number>>>) => {
-        setIsDrawing(true);
+        if (isDrawing) {
+            setIsDrawing(false);
+        }
         const svg = event.currentTarget;
         const point = svg.createSVGPoint();
         point.x = event.clientX;
@@ -30,6 +32,8 @@ export function Pen() {
         setPoints([...points, [transformedPoint.x, transformedPoint.y]]);
         setSavedPaths([...savedPaths, currentPath]);
         setPathStrokeWidths(prev => prev.set(currentPath, strokeWidth));
+        setIsDrawing(true)
+        event.preventDefault()
     };
 
     const handleMouseMovePen = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setCurrentStrokeWidth: Dispatch<SetStateAction<number | undefined>>) => {
@@ -42,14 +46,15 @@ export function Pen() {
             const currentPath = `M${points[points.length - 1][0]},${points[points.length - 1][1]} C${points[points.length - 1][0]},${points[points.length - 1][1]} ${transformedPoint.x},${transformedPoint.y} ${transformedPoint.x},${transformedPoint.y}`;
             setCurrentStrokeWidth(strokeWidth);
             setCurrentPath(currentPath);
+            event.preventDefault()
         }
     };
 
     const handleKeyClickPen = (event: any, setCurrentPath: Dispatch<SetStateAction<string>>) => {
         if (isDrawing && event.ctrlKey && mode == Mode.PEN) {
+            setIsDrawing(false);
             setCurrentPath("")
             setSavedPaths([...savedPaths]);
-            setIsDrawing(false);
             setPoints([])
             return;
         }

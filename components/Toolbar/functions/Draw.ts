@@ -36,13 +36,13 @@ export function Draw() {
 
     const handleMouseUpDraw = (event: MouseEvent<SVGSVGElement>, setCurrentPath: Dispatch<SetStateAction<string>>, setPathStrokeWidths: Dispatch<SetStateAction<Map<string, number>>>) => {
         setIsDrawing(false);
-        const interpolatedPoints = interpolate(points);
-        setPoints(interpolatedPoints);
+        //const interpolatedPoints = interpolate(points);
+        //setPoints(interpolatedPoints);
         const currentPath =
             points.length === 0
                 ? ""
-                : `M${interpolatedPoints[0][0]},${interpolatedPoints[0][1]} C${interpolatedPoints[0][0]},${interpolatedPoints[0][1]}` +
-                interpolatedPoints
+                : `M${points[0][0]},${points[0][1]} C${points[0][0]},${points[0][1]}` +
+                points
                     .slice(1)
                     .map(
                         (point) =>
