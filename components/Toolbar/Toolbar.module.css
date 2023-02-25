@@ -1,15 +1,28 @@
 .toolbar {
     position: absolute;
     height: 100%;
-    width: 3em;
+    width: 6em;
     align-items: center;
     justify-content: space-around;
-    background-color: #091322;
     left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 0;
+    padding: 2em;
+    
+}
+
+.toolbarBody{
+    height: 100%;
+    width: 4em;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #222222;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
 }
 
 .toolbarButton {
@@ -22,7 +35,7 @@
     min-height: 2.5em;
     border-radius: 5px;
     cursor: pointer;
-    color: white;
+    color: rgb(169, 169, 169);
 }
 
 .toolbarButtonActive {
@@ -30,35 +43,25 @@
     align-items: center;
     justify-content: center;
     width: fit-content;
-    background-color: transparent;
+    background-color: #ffffff0f;
     min-width: 2.5em;
     min-height: 2.5em;
     border-radius: 5px;
     cursor: pointer;
     color: white;
-    background-color: #152e4f;
 }
 
-.toolbarButtonActive::before {
-    content: '';
-    display: block;
-    position: absolute;
-    border: 1px solid #000;
-    min-width: 0.3em;
-    min-height: 2.5em;
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-    left: 5px;
-    background-color: #4c91ed;
+.toolbarButtonActive .toolbarIcon{
+    transform: scale(1.25);
 }
 
 .toolbarButton:hover {
-    background-color: #152e4f;
+    background-color: #ffffff0f;
     cursor: pointer;
 }
 
 .toolbarIcon {
-    font-size: 1rem;
+    font-size: 1.15rem;
 }
 
 .boxSliderSrokeWidth {

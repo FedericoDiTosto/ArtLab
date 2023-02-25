@@ -1,4 +1,4 @@
-import { FaPencilAlt, FaEraser, FaPenNib, FaRegSquare, FaSlash, FaRegCircle, FaLocationArrow } from "react-icons/fa";
+import { BiNavigation, BiPencil,BiEraser, BiPen,BiMinus,  BiCircle, BiSquare} from "react-icons/bi";
 import useCanvasStore from "../../store/canvasStore";
 import useUiStore, { Mode } from "../../store/ui";
 
@@ -32,31 +32,33 @@ export default function Toolbar() {
 
     return (
         <div className={styles.toolbar}>
+            <div className={styles.toolbarBody}>
             <div className={mode !== Mode.SELECT ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SELECT)} title="select">
-                <FaLocationArrow className={styles.toolbarIcon} />
+                <BiNavigation className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.DRAW ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.DRAW)} title="pencil">
-                <FaPencilAlt className={styles.toolbarIcon} />
+                <BiPencil className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.ERASE ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.ERASE)} title="eraser">
-                <FaEraser className={styles.toolbarIcon} />
+                <BiEraser className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.PEN ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.PEN)} title="pen">
-                <FaPenNib className={styles.toolbarIcon} />
+                <BiPen className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.LINE ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.LINE)} title="line">
-                <FaSlash className={styles.toolbarIcon} />
+                <BiMinus className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.SHAPE || shape !== "Rectangle" ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SHAPE, "Rectangle")} title="rectangle">
-                <FaRegSquare className={styles.toolbarIcon} />
+                <BiSquare className={styles.toolbarIcon} />
             </div>
             <div className={mode !== Mode.SHAPE || shape !== "Circle" ? styles.toolbarButton : styles.toolbarButtonActive} onClick={() => changeMode(Mode.SHAPE, "Circle")} title="circle">
-                <FaRegCircle className={styles.toolbarIcon} />
+                <BiCircle className={styles.toolbarIcon} />
             </div>
             <div className={styles.boxSliderSrokeWidth} title="stroke">
                 <input type="number" min="0.25" max="100" value={strokeWidth} onChange={onStrokeWidthChange} />
                 <div className={styles.spanStrokeWidth}>px</div>
             </div>
+        </div>
         </div>
     );
 }
